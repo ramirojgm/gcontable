@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/gcontable/gui/">
+    <file compressed="true">gcontablewindow.ui</file>
+  </gresource>
+</gresources>
