@@ -15,21 +15,32 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLE_H_
-#define GCONTABLE_H_
+#ifndef GCONTABLEUSERPAGE_H_
+#define GCONTABLEUSERPAGE_H_
 
-#include <gtk/gtk.h>
+#define GCONTABLE_TYPE_USER_PAGE	(gcontable_user_page_get_type())
+G_DECLARE_FINAL_TYPE(GContableUserPage,gcontable_user_page,GCONTABLE,USER_PAGE,GContablePage)
 
-#include <config.h>
-#include <gcontableapplication.h>
-#include <gcontablepage.h>
-#include <gcontabletoolbar.h>
-#include <gcontablewindow.h>
-#include <gcontableuserpage.h>
-#include <gcontableaccountpage.h>
-#include <gcontablevoucherpage.h>
-#include <gcontablespecialaccountpage.h>
+typedef struct _GContableUserPagePrivate GContableUserPagePrivate;
 
+struct _GContableUserPageClass
+{
+  GContablePageClass parent_class;
+};
 
+struct _GContableUserPage
+{
+  GContablePage parent_instance;
 
-#endif /* GCONTABLE_H_ */
+  /* private */
+  GContableUserPagePrivate * priv;
+};
+
+G_BEGIN_DECLS
+
+GLIB_AVAILABLE_IN_ALL
+GType		gcontable_user_page_get_type(void);
+
+G_END_DECLS
+
+#endif /* GCONTABLEUSERPAGE_H_ */

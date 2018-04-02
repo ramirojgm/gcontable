@@ -15,21 +15,9 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLE_H_
-#define GCONTABLE_H_
-
-#include <gtk/gtk.h>
-
-#include <config.h>
-#include <gcontableapplication.h>
-#include <gcontablepage.h>
-#include <gcontabletoolbar.h>
-#include <gcontablewindow.h>
-#include <gcontableuserpage.h>
-#include <gcontableaccountpage.h>
-#include <gcontablevoucherpage.h>
-#include <gcontablespecialaccountpage.h>
+#ifndef CONFIG_H_
+#define CONFIG_H_
 
 
 
-#endif /* GCONTABLE_H_ */
+#endif /* CONFIG_H_ */

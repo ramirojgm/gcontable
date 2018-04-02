@@ -1,4 +1,4 @@
-/* Copyright (C) 2017 Ramiro Jose Garcia Moraga
+/* Copyright (C) 2018 Ramiro Jose Garcia Moraga
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,19 +24,37 @@ G_DECLARE_DERIVABLE_TYPE(GContablePage,gcontable_page,GCONTABLE,PAGE,GtkBin)
 
 struct _GContablePageClass
 {
-	GtkBinClass parent_class;
-	/* virtual */
-	gboolean (*request_close)(GContablePage * page);
+  GtkBinClass parent_class;
+  /* virtual */
+  gboolean (*request_close)(GContablePage * page);
+
+  /* properties */
+  const gchar * group;
+  const gchar * icon_name;
+  const gchar * title;
+  const gchar * description;
 };
 
+G_BEGIN_DECLS
+
+GLIB_AVAILABLE_IN_ALL
 GType		gcontable_page_get_type(void);
 
+GLIB_AVAILABLE_IN_ALL
 GtkWidget *	gcontable_page_new(void);
 
+GLIB_AVAILABLE_IN_ALL
 GtkWidget *	gcontable_page_get_label_area(GContablePage * page);
 
+GLIB_AVAILABLE_IN_ALL
 void		gcontable_page_set_label(GContablePage * page,const gchar * label);
 
+GLIB_AVAILABLE_IN_ALL
 const gchar *	gcontable_page_get_label(GContablePage * page);
+
+GLIB_AVAILABLE_IN_ALL
+void 		gcontable_page_set_icon_name(GContablePage * page,const gchar * icon_name);
+
+G_END_DECLS
 
 #endif

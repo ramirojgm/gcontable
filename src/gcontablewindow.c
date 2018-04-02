@@ -1,100 +1,242 @@
-/* Copyright (C) 2017 Ramiro Jose Garcia Moraga
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+/*
+	Copyright (C) 2018 Ramiro Jose Garcia Moraga
+
+	This file is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	This file is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 
-#include "gcontable.h"
+#include <gcontable.h>
+
 
 struct _GContableWindowPrivate
 {
-	GtkWidget
-		* notebook,
-		* box,
-		* headerbar,
-		* menu_button,
-		* menu_revealer,
-		* menu_box,
-		* menu_list_box,
-		* menu_search_entry;
+  GtkWidget * header,
+	    * body,
+	    * body_stack,
+	    * sidebar,
+	    * notebook,
+  //login
+	    * login_view,
+	    * login_body,
+	    * user_nick,
+	    * user_password,
+	    * login_button;
+
+  gpointer padding[12];
 };
 
 G_DEFINE_TYPE_WITH_PRIVATE(GContableWindow,gcontable_window,GTK_TYPE_APPLICATION_WINDOW)
 
-//signal
-static void
-_gcontable_window_on_menu_button_toggled(GContableWindow * self,GtkToggleButton * button)
+
+GContableWindow *
+gcontable_window_new(void)
 {
-	gtk_revealer_set_reveal_child(GTK_REVEALER(self->priv->menu_revealer),gtk_toggle_button_get_active(button));
+  return GCONTABLE_WINDOW(g_object_new(GCONTABLE_TYPE_WINDOW,NULL));
+}
+
+static void
+gcontable_window_on_login_activated(GContableWindow * win)
+{
+  gtk_stack_set_visible_child_name(GTK_STACK(win->priv->body_stack),"body");
+
+}
+
+static void
+gcontable_window_on_sidebar_row_activated(GContableWindow * win,
+					  GtkListBoxRow *row)
+{
+    GType page_type = GPOINTER_TO_INT(g_object_get_data(G_OBJECT(row),"page-type"));
+
+    GList * childs = gtk_container_get_children(GTK_CONTAINER(win->priv->notebook));
+    gint page_index = -1;
+    for(GList * child_iter = g_list_first(childs); child_iter; child_iter = g_list_next(child_iter))
+      {
+	if(G_TYPE_FROM_INSTANCE(child_iter->data) == page_type)
+	  {
+	      page_index = gtk_notebook_page_num(GTK_NOTEBOOK(win->priv->notebook),GTK_WIDGET(child_iter->data));
+	      break;
+	  }
+      }
+
+    if(page_index == -1)
+      {
+	GContablePage * page = GCONTABLE_PAGE(gtk_widget_new(page_type,"visible",TRUE,NULL));
+	page_index = gtk_notebook_append_page(GTK_NOTEBOOK(win->priv->notebook),GTK_WIDGET(page),gcontable_page_get_label_area(page));
+	gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(win->priv->notebook),GTK_WIDGET(page),TRUE);
+      }
+    gtk_notebook_set_current_page(GTK_NOTEBOOK(win->priv->notebook),page_index);
 }
 
 
 static void
+gcontable_window_sidebar_init(GContableWindow * self)
+{
+  GCONTABLE_TYPE_USER_PAGE;
+  GCONTABLE_TYPE_ACCOUNT_PAGE;
+  GCONTABLE_TYPE_SPECIAL_ACCOUNT_PAGE;
+  GCONTABLE_TYPE_VOUCHER_PAGE;
+
+  guint n_page_types = 0;
+  g_autofree GType * page_types = g_type_children(GCONTABLE_TYPE_PAGE,&n_page_types);
+
+
+  for(guint page_index = 0; page_index < n_page_types; page_index ++)
+    {
+      GType page_type = page_types[page_index];
+      GContablePageClass * page_class = GCONTABLE_PAGE_CLASS(g_type_class_ref(page_type));
+
+      g_autofree gchar * description = g_strdup_printf("%s\n<small>%s</small>",
+						  page_class->title,
+						  page_class->description);
+
+      GtkWidget * list_row = gtk_widget_new(GTK_TYPE_LIST_BOX_ROW,
+					    "visible",TRUE,
+					    NULL),
+
+		* icon = gtk_image_new_from_icon_name(page_class->icon_name,GTK_ICON_SIZE_LARGE_TOOLBAR),
+
+		* label = gtk_widget_new(GTK_TYPE_LABEL,
+					 "label",description,
+					 "use-markup",TRUE,
+					 "xalign",0,
+					 NULL),
+
+		* box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,5);
+
+      gtk_box_pack_start(GTK_BOX(box),icon,FALSE,FALSE,0);
+      gtk_box_pack_end(GTK_BOX(box),label,TRUE,TRUE,0);
+      gtk_container_set_border_width(GTK_CONTAINER(box),5);
+
+      gtk_container_add(GTK_CONTAINER(list_row),box);
+      gtk_widget_show_all(list_row);
+
+      gtk_list_box_insert(GTK_LIST_BOX(self->priv->sidebar),list_row,-1);
+
+      g_object_set_data(G_OBJECT(list_row),"page-type",GINT_TO_POINTER(page_type));
+    }
+}
+
+static void
 gcontable_window_init(GContableWindow * self)
 {
-	self->priv = gcontable_window_get_instance_private(self);
-	//init
-	self->priv->notebook = gtk_notebook_new();
-	self->priv->box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL,0);
-	self->priv->headerbar = gtk_header_bar_new();
-	self->priv->menu_box = gtk_box_new(GTK_ORIENTATION_VERTICAL,0);
-	self->priv->menu_button = gtk_toggle_button_new();
-	self->priv->menu_search_entry = gtk_search_entry_new();
-	self->priv->menu_list_box = gtk_list_box_new();
-	self->priv->menu_revealer = gtk_revealer_new();
+  self->priv = gcontable_window_get_instance_private(self);
+  GContableWindowPrivate * priv = self->priv;
 
-	//headerbar
-	gtk_header_bar_set_title(GTK_HEADER_BAR(self->priv->headerbar),"GContable");
-	gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(self->priv->headerbar),TRUE);
-	gtk_window_set_titlebar(GTK_WINDOW(self),self->priv->headerbar);
+  //header
+  priv->header = gtk_widget_new(GTK_TYPE_HEADER_BAR,
+				      "title","GContable",
+				      "subtitle","GNOME Contable application",
+				      "show-close-button", TRUE,
+				      "visible",TRUE,
+				      NULL);
+  //self
+  gtk_window_set_titlebar(GTK_WINDOW(self),priv->header);
 
-	//menu_button
-	gtk_container_add(GTK_CONTAINER(self->priv->menu_button),gtk_image_new_from_icon_name("open-menu-symbolic",GTK_ICON_SIZE_BUTTON));
-	gtk_header_bar_pack_start(GTK_HEADER_BAR (self->priv->headerbar),self->priv->menu_button);
+  //body
+  priv->body = gtk_widget_new(GTK_TYPE_PANED,
+			      "orientation",GTK_ORIENTATION_HORIZONTAL,
+			      "position",200,
+			      "visible",TRUE,
+			      NULL);
 
-	//menu_revealer
-	gtk_box_pack_start(GTK_BOX(self->priv->box),self->priv->menu_revealer,FALSE,FALSE,0);
-	gtk_box_pack_start(GTK_BOX(self->priv->box),gtk_separator_new(GTK_ORIENTATION_VERTICAL),FALSE,FALSE,0);
-	gtk_container_add(GTK_CONTAINER (self->priv->menu_revealer),self->priv->menu_box);
-	gtk_revealer_set_transition_type(GTK_REVEALER(self->priv->menu_revealer),GTK_REVEALER_TRANSITION_TYPE_SLIDE_RIGHT);
-	gtk_revealer_set_transition_duration(GTK_REVEALER(self->priv->menu_revealer),500);
+  //sidebar
+  priv->sidebar = gtk_widget_new(GTK_TYPE_LIST_BOX,
+				 "visible",TRUE,
+				 NULL);
+  //notebook
+  priv->notebook = gtk_widget_new(GTK_TYPE_NOTEBOOK,
+				  "show-border",FALSE,
+				  "scrollable",TRUE,
+				  "visible",TRUE,
+				  NULL);
+  //body_stack
+  priv->body_stack = gtk_widget_new(GTK_TYPE_STACK,
+				    "transition-type",GTK_STACK_TRANSITION_TYPE_SLIDE_LEFT_RIGHT,
+				    "transition-duration",300,
+				    "visible",TRUE,
+				    NULL);
 
-	//menu_search_entry
-	gtk_entry_set_has_frame(GTK_ENTRY(self->priv->menu_search_entry),FALSE);
-	gtk_widget_set_margin_start(self->priv->menu_search_entry,5);
-	gtk_widget_set_margin_end(self->priv->menu_search_entry,5);
-	gtk_entry_set_placeholder_text(GTK_ENTRY(self->priv->menu_search_entry),"Buscar");
-	gtk_box_pack_start(GTK_BOX(self->priv->menu_box),self->priv->menu_search_entry,FALSE,FALSE,5);
-	gtk_box_pack_start(GTK_BOX(self->priv->menu_box),gtk_separator_new(GTK_ORIENTATION_HORIZONTAL),FALSE,FALSE,0);
+  //login_body
+  priv->login_body = gtk_widget_new(GTK_TYPE_BOX,
+				    "orientation",GTK_ORIENTATION_VERTICAL,
+				    "margin-start",20,
+				    "margin-end",20,
+				    "margin-top",30,
+				    "margin-bottom",30,
+				    "visible",TRUE,
+				    NULL);
+  //login_view
+  priv->login_view = gtk_widget_new(GTK_TYPE_VIEWPORT,
+				    "vexpand",FALSE,
+				    "hexpand",FALSE,
+				    "valign",GTK_ALIGN_CENTER,
+				    "halign",GTK_ALIGN_CENTER,
+				    "width-request",250,
+				    "visible",TRUE,
+				    NULL);
 
-	//notebook
-	gtk_notebook_set_show_border(GTK_NOTEBOOK(self->priv->notebook),FALSE);
-	gtk_box_pack_end(GTK_BOX(self->priv->box),self->priv->notebook,TRUE,TRUE,0);
+  //user_nick
+  priv->user_nick = gtk_widget_new(GTK_TYPE_ENTRY,
+				   "text","",
+				   "can-default",FALSE,
+				   "has-focus",FALSE,
+				   "placeholder-text","Nick",
+				   "visible",TRUE,
+				   NULL);
+  //user_password
+  priv->user_password = gtk_widget_new(GTK_TYPE_ENTRY,
+				 "text","",
+				 "can-default",FALSE,
+				 "has-focus",FALSE,
+				 "placeholder-text","Password",
+				 "visibility",FALSE,
+				 "visible",TRUE,
+				 NULL);
+  //login_button
+  priv->login_button = gtk_widget_new(GTK_TYPE_BUTTON,
+				      "can-default",TRUE,
+				      "can-focus",TRUE,
+				      "has-focus",TRUE,
+				      "label","Login",
+				      "visible",TRUE,
+				      NULL);
 
-	//menu_list_box
-	gtk_box_pack_end(GTK_BOX(self->priv->menu_box),self->priv->menu_list_box,TRUE,TRUE,0);
 
-	//box
-	gtk_style_context_add_class(gtk_widget_get_style_context(self->priv->box),"view");
-	gtk_container_add(GTK_CONTAINER(self),self->priv->box);
+  gtk_paned_pack1(GTK_PANED(priv->body),priv->sidebar,FALSE,FALSE);
+  gtk_paned_pack2(GTK_PANED(priv->body),priv->notebook,TRUE,TRUE);
 
-	//connet signals
-	g_signal_connect_swapped(self->priv->menu_button,"toggled",G_CALLBACK(_gcontable_window_on_menu_button_toggled),self);
+  gtk_box_pack_start(GTK_BOX(priv->login_body),priv->user_nick,FALSE,FALSE,0);
+  gtk_box_pack_start(GTK_BOX(priv->login_body),priv->user_password,FALSE,FALSE,0);
+  gtk_box_pack_end(GTK_BOX(priv->login_body),priv->login_button,FALSE,FALSE,0);
 
-	//show
-	gtk_widget_show_all(self->priv->box);
-	gtk_widget_show_all(self->priv->headerbar);
+  gtk_style_context_add_class(gtk_widget_get_style_context(priv->login_view),"view");
+  gtk_style_context_add_class(gtk_widget_get_style_context(priv->login_body),"linked");
+  gtk_style_context_add_class(gtk_widget_get_style_context(priv->notebook),"background");
+  gtk_style_context_add_class(gtk_widget_get_style_context(priv->login_button),"suggested-action");
+  gtk_style_context_add_class(gtk_widget_get_style_context(priv->sidebar),"sidebar");
+
+  gtk_container_add(GTK_CONTAINER(self),priv->body_stack);
+  gtk_container_add(GTK_CONTAINER(priv->login_view),priv->login_body);
+  gtk_stack_add_named(GTK_STACK(priv->body_stack),priv->login_view,"login");
+  gtk_stack_add_named(GTK_STACK(priv->body_stack),priv->body,"body");
+
+  g_signal_connect_swapped(priv->login_button,"clicked",G_CALLBACK(gcontable_window_on_login_activated),self);
+  g_signal_connect_swapped(priv->user_nick,"activate",G_CALLBACK(gcontable_window_on_login_activated),self);
+  g_signal_connect_swapped(priv->user_password,"activate",G_CALLBACK(gcontable_window_on_login_activated),self);
+  g_signal_connect_swapped(priv->sidebar,"row-activated",G_CALLBACK(gcontable_window_on_sidebar_row_activated),self);
+
+  gcontable_window_sidebar_init(self);
 }
 
 static void
@@ -103,34 +245,5 @@ gcontable_window_class_init(GContableWindowClass * klass)
 
 }
 
-GtkWidget *
-gcontable_window_new()
-{
-	return GTK_WIDGET(g_object_new(GCONTABLE_TYPE_WINDOW,NULL));
-}
 
-void
-gcontable_window_append_page(GContableWindow * window,GtkWidget * page)
-{
-	g_return_if_fail(GCONTABLE_IS_WINDOW(window));
-	g_return_if_fail(GCONTABLE_IS_PAGE(page));
-	gint new_page_num = gtk_notebook_append_page(GTK_NOTEBOOK(window->priv->notebook), page,gcontable_page_get_label_area (GCONTABLE_PAGE(page)));
-	gtk_widget_show(page);
-	gtk_notebook_set_tab_reorderable(GTK_NOTEBOOK(window->priv->notebook),page,TRUE);
-	gtk_notebook_set_current_page(GTK_NOTEBOOK(window->priv->notebook),new_page_num);
-}
 
-void
-gcontable_window_append_remove(GContableWindow * window,GtkWidget * page)
-{
-	g_return_if_fail(GCONTABLE_IS_WINDOW(window));
-	g_return_if_fail(GCONTABLE_IS_PAGE(page));
-}
-
-void
-gcontable_window_add_page_entries(GContableWindow * window,
-																	const gchar * group_title,
-																	const GContablePageEntry ** entries)
-{
-
-}

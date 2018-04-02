@@ -15,21 +15,32 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLE_H_
-#define GCONTABLE_H_
+#ifndef GCONTABLEVOUCHERPAGE_H_
+#define GCONTABLEVOUCHERPAGE_H_
 
-#include <gtk/gtk.h>
+#define GCONTABLE_TYPE_VOUCHER_PAGE	(gcontable_voucher_page_get_type())
+G_DECLARE_FINAL_TYPE(GContableVoucherPage,gcontable_voucher_page,GCONTABLE,VOUCHER_PAGE,GContablePage)
 
-#include <config.h>
-#include <gcontableapplication.h>
-#include <gcontablepage.h>
-#include <gcontabletoolbar.h>
-#include <gcontablewindow.h>
-#include <gcontableuserpage.h>
-#include <gcontableaccountpage.h>
-#include <gcontablevoucherpage.h>
-#include <gcontablespecialaccountpage.h>
+typedef struct _GContableVoucherPagePrivate GContableVoucherPagePrivate;
 
+struct _GContableVoucherPageClass
+{
+  GContablePageClass parent_class;
+};
 
+struct _GContableVoucherPage
+{
+  GContablePage parent_instance;
 
-#endif /* GCONTABLE_H_ */
+  /* private */
+  GContableVoucherPagePrivate * priv;
+};
+
+G_BEGIN_DECLS
+
+GLIB_AVAILABLE_IN_ALL
+GType		gcontable_voucher_page_get_type(void);
+
+G_END_DECLS
+
+#endif /* GCONTABLEVOUCHERPAGE_H_ */

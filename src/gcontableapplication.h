@@ -15,37 +15,34 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLEWINDOW_H_
-#define GCONTABLEWINDOW_H_
+#ifndef GCONTABLEAPPLICATION_H_
+#define GCONTABLEAPPLICATION_H_
 
-#define GCONTABLE_TYPE_WINDOW (gcontable_window_get_type())
-G_DECLARE_FINAL_TYPE(GContableWindow,gcontable_window,GCONTABLE,WINDOW,GtkApplicationWindow)
+#define GCONTABLE_TYPE_APPLICATION	(gcontable_application_get_type())
+G_DECLARE_FINAL_TYPE(GContableApplication,gcontable_application,GCONTABLE,APPLICATION,GtkApplication)
 
-typedef struct _GContableWindowPrivate GContableWindowPrivate;
+typedef struct _GContableApplicationPrivate GContableApplicationPrivate;
 
-struct _GContableWindowClass
+struct _GContableApplicationClass
 {
-  GtkApplicationWindowClass parent_class;
-
+  GtkApplicationClass parent_class;
 };
 
-struct _GContableWindow
+struct _GContableApplication
 {
-  GtkApplicationWindow parent_instance;
-
-  /* private */
-  GContableWindowPrivate * priv;
+  GtkApplication parent_instance;
+  GContableApplicationPrivate * priv;
 };
 
 G_BEGIN_DECLS
 
-GLIB_AVAILABLE_IN_ALL
-GType			gcontable_window_get_type(void);
+GLIB_AVAILABLE_IN_2_54
+GType			gcontable_application_get_type(void);
 
-GLIB_AVAILABLE_IN_ALL
-GContableWindow *	gcontable_window_new(void);
+GLIB_AVAILABLE_IN_2_54
+GContableApplication * 	gcontable_application_new(void);
 
 
 G_END_DECLS
 
-#endif /* GCONTABLEWINDOW_H_ */
+#endif /* GCONTABLEAPPLICATION_H_ */

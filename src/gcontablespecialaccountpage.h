@@ -15,37 +15,32 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLEWINDOW_H_
-#define GCONTABLEWINDOW_H_
+#ifndef GCONTABLESPECIALACCOUNTPAGE_H_
+#define GCONTABLESPECIALACCOUNTPAGE_H_
 
-#define GCONTABLE_TYPE_WINDOW (gcontable_window_get_type())
-G_DECLARE_FINAL_TYPE(GContableWindow,gcontable_window,GCONTABLE,WINDOW,GtkApplicationWindow)
+#define GCONTABLE_TYPE_SPECIAL_ACCOUNT_PAGE	(gcontable_special_account_page_get_type())
+G_DECLARE_FINAL_TYPE(GContableSpecialAccountPage,gcontable_special_account_page,GCONTABLE,SPECIAL_ACCOUNT_PAGE,GContablePage)
 
-typedef struct _GContableWindowPrivate GContableWindowPrivate;
+typedef struct _GContableSpecialAccountPagePrivate GContableSpecialAccountPagePrivate;
 
-struct _GContableWindowClass
+struct _GContableSpecialAccountPageClass
 {
-  GtkApplicationWindowClass parent_class;
-
+  GContablePageClass parent_class;
 };
 
-struct _GContableWindow
+struct _GContableSpecialAccountPage
 {
-  GtkApplicationWindow parent_instance;
+  GContablePage parent_instance;
 
   /* private */
-  GContableWindowPrivate * priv;
+  GContableSpecialAccountPagePrivate * priv;
 };
 
 G_BEGIN_DECLS
 
 GLIB_AVAILABLE_IN_ALL
-GType			gcontable_window_get_type(void);
-
-GLIB_AVAILABLE_IN_ALL
-GContableWindow *	gcontable_window_new(void);
-
+GType		gcontable_special_account_page_get_type(void);
 
 G_END_DECLS
 
-#endif /* GCONTABLEWINDOW_H_ */
+#endif /* GCONTABLESPECIALACCOUNTPAGE_H_ */
