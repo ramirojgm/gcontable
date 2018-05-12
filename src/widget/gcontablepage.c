@@ -27,6 +27,7 @@ struct _GContablePagePrivate
 		* image_icon;
 };
 
+
 G_DEFINE_TYPE_WITH_PRIVATE(GContablePage,gcontable_page,GTK_TYPE_BIN)
 
 static gboolean

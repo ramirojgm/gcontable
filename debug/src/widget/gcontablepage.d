@@ -1,4 +1,4 @@
-src/gcontablewindow.o: ../src/gcontablewindow.c \
+src/widget/gcontablepage.o: ../src/widget/gcontablepage.c \
   /home/ramiro/git/gcontable/src/gcontable.h \
   /usr/include/gtk-3.0/gtk/gtk.h /usr/include/gtk-3.0/gdk/gdk.h \
   /usr/include/gtk-3.0/gdk/gdkconfig.h /usr/include/glib-2.0/glib.h \
@@ -595,13 +595,14 @@ src/gcontablewindow.o: ../src/gcontablewindow.c \
   /usr/include/gtk-3.0/gtk/gtk-autocleanups.h \
   /home/ramiro/git/gcontable/src/config.h \
   /home/ramiro/git/gcontable/src/gcontableapplication.h \
-  /home/ramiro/git/gcontable/src/gcontablepage.h \
-  /home/ramiro/git/gcontable/src/gcontabletoolbar.h \
-  /home/ramiro/git/gcontable/src/gcontablewindow.h \
-  /home/ramiro/git/gcontable/src/gcontableuserpage.h \
-  /home/ramiro/git/gcontable/src/gcontableaccountpage.h \
-  /home/ramiro/git/gcontable/src/gcontablevoucherpage.h \
-  /home/ramiro/git/gcontable/src/gcontablespecialaccountpage.h
+  /home/ramiro/git/gcontable/src/web/gcontablewebcontext.h \
+  /home/ramiro/git/gcontable/src/widget/gcontablepage.h \
+  /home/ramiro/git/gcontable/src/widget/gcontabletoolbar.h \
+  /home/ramiro/git/gcontable/src/widget/gcontablewindow.h \
+  /home/ramiro/git/gcontable/src/accounting/gcontableuserpage.h \
+  /home/ramiro/git/gcontable/src/accounting/gcontableaccountpage.h \
+  /home/ramiro/git/gcontable/src/accounting/gcontablevoucherpage.h \
+  /home/ramiro/git/gcontable/src/accounting/gcontablespecialaccountpage.h
 
 /home/ramiro/git/gcontable/src/gcontable.h:
 
@@ -1833,16 +1834,18 @@ src/gcontablewindow.o: ../src/gcontablewindow.c \
 
 /home/ramiro/git/gcontable/src/gcontableapplication.h:
 
-/home/ramiro/git/gcontable/src/gcontablepage.h:
+/home/ramiro/git/gcontable/src/web/gcontablewebcontext.h:
 
-/home/ramiro/git/gcontable/src/gcontabletoolbar.h:
+/home/ramiro/git/gcontable/src/widget/gcontablepage.h:
 
-/home/ramiro/git/gcontable/src/gcontablewindow.h:
+/home/ramiro/git/gcontable/src/widget/gcontabletoolbar.h:
 
-/home/ramiro/git/gcontable/src/gcontableuserpage.h:
+/home/ramiro/git/gcontable/src/widget/gcontablewindow.h:
 
-/home/ramiro/git/gcontable/src/gcontableaccountpage.h:
+/home/ramiro/git/gcontable/src/accounting/gcontableuserpage.h:
 
-/home/ramiro/git/gcontable/src/gcontablevoucherpage.h:
+/home/ramiro/git/gcontable/src/accounting/gcontableaccountpage.h:
 
-/home/ramiro/git/gcontable/src/gcontablespecialaccountpage.h:
+/home/ramiro/git/gcontable/src/accounting/gcontablevoucherpage.h:
+
+/home/ramiro/git/gcontable/src/accounting/gcontablespecialaccountpage.h:

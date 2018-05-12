@@ -14,5 +14,9 @@ C_DEPS :=
 # Every subdirectory with source files must be described here
 SUBDIRS := \
 . \
+src/accounting \
 src \
+src/web \
+src/web/http \
+src/widget \
 

@@ -18,6 +18,6 @@
 #ifndef CONFIG_H_
 #define CONFIG_H_
 
-
+#define GCONTABLE_WEB_API_ADDRESS	"localhost:80"
 
 #endif /* CONFIG_H_ */

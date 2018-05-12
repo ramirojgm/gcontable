@@ -15,25 +15,23 @@
 	along with the this software.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GCONTABLE_H_
-#define GCONTABLE_H_
+#include <gcontable.h>
+#include <web/http/httprequest.h>
+#include <web/http/httpresponse.h>
 
-#include <gtk/gtk.h>
+struct _GContableWebContextPrivate
+{
+  gchar * host_and_port;
 
-#include <config.h>
-#include <gcontableapplication.h>
+  GInetAddress
+	* server_address;
 
-#include <web/gcontablewebcontext.h>
+  gchar * credentials;
+  GList * coockies;
+};
 
-#include <widget/gcontablepage.h>
-#include <widget/gcontabletoolbar.h>
-#include <widget/gcontablewindow.h>
+GQuark	gcontable_web_error_quark()
+{
+  return g_quark_from_static_string("gcontable-web-error");
+}
 
-#include <accounting/gcontableuserpage.h>
-#include <accounting/gcontableaccountpage.h>
-#include <accounting/gcontablevoucherpage.h>
-#include <accounting/gcontablespecialaccountpage.h>
-
-
-
-#endif /* GCONTABLE_H_ */

@@ -142,6 +142,8 @@ gcontable_toolbar_init(GContableToolbar * self)
   priv->search_bar = gtk_search_bar_new();
   priv->search_entry = gtk_search_entry_new();
 
+  gtk_widget_set_size_request(priv->search_entry,250,-1);
+
   gtk_container_add(GTK_CONTAINER(priv->search_bar),priv->search_entry);
 
   g_object_bind_property(priv->button_search,

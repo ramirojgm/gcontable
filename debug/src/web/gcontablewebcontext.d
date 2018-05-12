@@ -1,4 +1,4 @@
-src/gcontableapplication.o: ../src/gcontableapplication.c \
+src/web/gcontablewebcontext.o: ../src/web/gcontablewebcontext.c \
   /home/ramiro/git/gcontable/src/gcontable.h \
   /usr/include/gtk-3.0/gtk/gtk.h /usr/include/gtk-3.0/gdk/gdk.h \
   /usr/include/gtk-3.0/gdk/gdkconfig.h /usr/include/glib-2.0/glib.h \
@@ -602,7 +602,10 @@ src/gcontableapplication.o: ../src/gcontableapplication.c \
   /home/ramiro/git/gcontable/src/accounting/gcontableuserpage.h \
   /home/ramiro/git/gcontable/src/accounting/gcontableaccountpage.h \
   /home/ramiro/git/gcontable/src/accounting/gcontablevoucherpage.h \
-  /home/ramiro/git/gcontable/src/accounting/gcontablespecialaccountpage.h
+  /home/ramiro/git/gcontable/src/accounting/gcontablespecialaccountpage.h \
+  /home/ramiro/git/gcontable/src/web/http/httprequest.h \
+  /home/ramiro/git/gcontable/src/web/http/httppackage.h \
+  /home/ramiro/git/gcontable/src/web/http/httpresponse.h
 
 /home/ramiro/git/gcontable/src/gcontable.h:
 
@@ -1849,3 +1852,9 @@ src/gcontableapplication.o: ../src/gcontableapplication.c \
 /home/ramiro/git/gcontable/src/accounting/gcontablevoucherpage.h:
 
 /home/ramiro/git/gcontable/src/accounting/gcontablespecialaccountpage.h:
+
+/home/ramiro/git/gcontable/src/web/http/httprequest.h:
+
+/home/ramiro/git/gcontable/src/web/http/httppackage.h:
+
+/home/ramiro/git/gcontable/src/web/http/httpresponse.h:

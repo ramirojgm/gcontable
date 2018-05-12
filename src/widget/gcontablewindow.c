@@ -21,6 +21,8 @@
 
 struct _GContableWindowPrivate
 {
+  GContableWebContext * web_context;
+
   GtkWidget * header,
 	    * body,
 	    * body_stack,
@@ -48,6 +50,7 @@ gcontable_window_new(void)
 static void
 gcontable_window_on_login_activated(GContableWindow * win)
 {
+  GContableWebContext * web_context = NULL;
   gtk_stack_set_visible_child_name(GTK_STACK(win->priv->body_stack),"body");
 
 }
@@ -132,6 +135,9 @@ gcontable_window_init(GContableWindow * self)
 {
   self->priv = gcontable_window_get_instance_private(self);
   GContableWindowPrivate * priv = self->priv;
+
+  //web_context
+  priv->web_context = NULL;
 
   //header
   priv->header = gtk_widget_new(GTK_TYPE_HEADER_BAR,
